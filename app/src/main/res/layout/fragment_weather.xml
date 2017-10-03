@@ -24,7 +24,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/city_field"
         android:layout_marginLeft="10dp"
-        android:text="Updated"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textSize="13sp" />
 
@@ -81,8 +80,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/current_temperature_field"
         android:layout_centerHorizontal="true"
-        android:text="Current"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textSize="30sp" />
+
 
 </RelativeLayout>
