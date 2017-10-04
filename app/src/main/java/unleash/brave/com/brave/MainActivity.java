@@ -11,12 +11,13 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import java.io.IOException;
 
 public class MainActivity extends LocationHandler {
 
@@ -61,31 +62,36 @@ public class MainActivity extends LocationHandler {
 //            AlertDialog alert = builder.create();
 //            alert.show();
         } else {
-            Log.e("ONLINE", String.valueOf(isOnline()));
-            if (isOnline() == true)
-            {
-                // Set the relativelayout visibility
-                relativeLayout.setVisibility(View.INVISIBLE);
-                // Set the textview visibility
-                no_internet.setVisibility(View.INVISIBLE);
+            try {
+                if (isOnline() == true)
+                {
+                    // Set the relativelayout visibility
+                    relativeLayout.setVisibility(View.INVISIBLE);
+                    // Set the textview visibility
+                    no_internet.setVisibility(View.INVISIBLE);
 
-                Location _location = requestForCurrentLocation();
-                Double _LAT = _location.getLatitude();
-                Double _LONG = _location.getLongitude();
-                Bundle bundle = new Bundle();
-                bundle.putString("LATLONG", String.valueOf(_LAT) + ", " + String.valueOf(_LONG));
+                    Location _location = requestForCurrentLocation();
+                    Double _LAT = _location.getLatitude();
+                    Double _LONG = _location.getLongitude();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("LATLONG", String.valueOf(_LAT) + ", " + String.valueOf(_LONG));
 
-                if (savedInstanceState == null) {
-                    WeatherFragment fragobj = new WeatherFragment();
-                    fragobj.setArguments(bundle);
+                    if (savedInstanceState == null) {
+                        WeatherFragment fragobj = new WeatherFragment();
+                        fragobj.setArguments(bundle);
 
-                    getSupportFragmentManager().beginTransaction()
-                            .add(R.id.container, fragobj)
-                            .commit();
+                        getSupportFragmentManager().beginTransaction()
+                                .add(R.id.container, fragobj)
+                                .commit();
+                    }
                 }
+                else
+                    openDialog();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            else
-                openDialog();
         }
 
     }
@@ -118,14 +124,10 @@ public class MainActivity extends LocationHandler {
     }
 
     // Public class internet access
-    public boolean isOnline() {
-        return doSomething();
-    }
-
-    @Background
-    protected boolean doSomething()
+    public boolean isOnline() throws InterruptedException, IOException
     {
-        return true;
+        String command = "ping -c 1 google.com";
+        return (Runtime.getRuntime().exec (command).waitFor() == 0);
     }
 
     // Private class isNetworkAvailable
